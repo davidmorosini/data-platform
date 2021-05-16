@@ -1,7 +1,4 @@
-DOCKER_IMAGES=images
-SPARK_VERSION="3.0.0"
-HADOOP_VERSION="2.7"
-JUPYTERLAB_VERSION="3.0.15"
+include spark.env
 
 default: build-all
 
@@ -23,9 +20,13 @@ build-spark-master: build-spark-base
 build-spark-worker: build-spark-base
 	@docker build -f ${DOCKER_IMAGES}/spark-worker.Dockerfile -t spark-worker .
 
-build-jupyter-spark: build-cluster-base
+build-pyspark: build-cluster-base
 	@docker build \
 		--build-arg SPARK_VERSION="${SPARK_VERSION}" \
+		-f ${DOCKER_IMAGES}/pyspark.Dockerfile -t pyspark .
+
+build-jupyter-spark: build-pyspark
+	@docker build \
 		--build-arg JUPYTERLAB_VERSION="${JUPYTERLAB_VERSION}" \
 		-f ${DOCKER_IMAGES}/jupyterlab.Dockerfile \
 		-t jupyterlab .
