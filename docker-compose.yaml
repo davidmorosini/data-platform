@@ -6,6 +6,32 @@ volumes:
     driver: local
 
 services:
+  olap:
+    container_name: olap
+    image: postgres:10.10-alpine
+    restart: always
+    env_file: .env
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 5s
+      retries: 5
+      timeout: 3s
+    ports:
+      - 5432:5432
+    logging:
+      driver: none
+  
+  postgrest:
+    container_name: postgrest
+    image: postgrest
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - olap
+    logging:
+      driver: none
+
   jupyterlab:
     image: jupyterlab
     container_name: jupyterlab

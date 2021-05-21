@@ -1,35 +1,46 @@
-include spark.env
+include .env
 
 default: build-all
 
-build-all: build-jupyter-spark build-spark-worker build-spark-master
+build-all: build-all-clusters build-jupyter
 
-build-cluster-base:
-	@docker build -f ${DOCKER_IMAGES}/cluster-base.Dockerfile -t cluster-base .
+build-all-clusters: build-spark-cluster
 
-build-spark-base: build-cluster-base
+build-spark-cluster:
 	@docker build \
-		--build-arg SPARK_VERSION="${SPARK_VERSION}" \
-		--build-arg HADOOP_VERSION="${HADOOP_VERSION}" \
-		-f ${DOCKER_IMAGES}/spark-base.Dockerfile \
+		-f ${DOCKER_IMAGES_SPARK}/cluster-base.Dockerfile \
+		-t cluster-base .
+	@docker build \
+		--build-arg SPARK_VERSION="${VERSION_SPARK}" \
+		--build-arg HADOOP_VERSION="${VERSION_HADOOP}" \
+		-f ${DOCKER_IMAGES_SPARK}/spark-base.Dockerfile \
 		-t spark-base .
-
-build-spark-master: build-spark-base
-	@docker build -f ${DOCKER_IMAGES}/spark-master.Dockerfile -t spark-master .
-
-build-spark-worker: build-spark-base
-	@docker build -f ${DOCKER_IMAGES}/spark-worker.Dockerfile -t spark-worker .
-
-build-pyspark: build-cluster-base
 	@docker build \
-		--build-arg SPARK_VERSION="${SPARK_VERSION}" \
-		-f ${DOCKER_IMAGES}/pyspark.Dockerfile -t pyspark .
-
-build-jupyter-spark: build-pyspark
+		-f ${DOCKER_IMAGES_SPARK}/spark-master.Dockerfile \
+		-t spark-master .
 	@docker build \
-		--build-arg JUPYTERLAB_VERSION="${JUPYTERLAB_VERSION}" \
+		-f ${DOCKER_IMAGES_SPARK}/spark-worker.Dockerfile \
+		-t spark-worker .
+	@docker build \
+		--build-arg SPARK_VERSION="${VERSION_SPARK}" \
+		-f ${DOCKER_IMAGES_SPARK}/pyspark.Dockerfile \
+		-t pyspark .
+
+build-jupyter: build-spark-cluster
+	@docker build \
+		--build-arg JUPYTERLAB_VERSION="${VERSION_JUPYTERLAB}" \
 		-f ${DOCKER_IMAGES}/jupyterlab.Dockerfile \
 		-t jupyterlab .
 
+build-postgrest:
+	@docker build \
+		--build-arg POSTGREST_VERSION="v7.0.1" \
+		--build-arg POSTGREST_PLATFORM="linux-x64-static" \
+		-f ${DOCKER_IMAGES}/postgrest.Dockerfile \
+		-t postgrest .
+
 run:
 	@docker-compose up
+
+run-olap:
+	@docker-compose up olap postgrest
