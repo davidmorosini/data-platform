@@ -42,5 +42,8 @@ build-postgrest:
 run:
 	@docker-compose up
 
+run-spark:
+	@docker-compose up jupyterlab spark-master spark-worker-1 spark-worker-2
+
 run-olap:
 	@docker-compose up olap postgrest
