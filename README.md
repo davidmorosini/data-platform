@@ -1,14 +1,24 @@
 # dataservice
-My personal Data As a Service project
+My personal Infrastructure of Data As a Service
 
-Para executar:
+
+## All Build
+
 ```sh
 make build-all
-make run
 ```
 
-Saídas:
-- http://localhost:8888/  -> Jupyter lab Interface (Conectado com o spark cluster)
+## Spark Cluster
+
+this environment contains a spark cluster with 2 workers. 
+
+```sh
+make run-spark
+```
+
+This execution results in:
+
+- http://localhost:8888/  -> Jupyter lab Interface (Connected with spark cluster)
 - http://localhost:8080/  -> Spark master Interface
 - http://localhost:8081/  -> Spark worker 1 Interface
 - http://localhost:8082/  -> Spark worker 2 Interface

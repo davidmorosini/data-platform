@@ -2,31 +2,41 @@ include .env
 
 default: build-all
 
-build-all: build-all-clusters build-jupyter
+build-all: build-all-clusters build-jupyter-with-spark
 
 build-all-clusters: build-spark-cluster
 
-build-spark-cluster:
+build-spark-cluster: build-spark-cluster-base build-spark-base build-spark-master build-spark-worker build-pyspark
+
+build-spark-cluster-base:
 	@docker build \
 		-f ${DOCKER_IMAGES_SPARK}/cluster-base.Dockerfile \
 		-t cluster-base .
+
+build-spark-base:
 	@docker build \
 		--build-arg SPARK_VERSION=${SPARK_VERSION} \
 		--build-arg HADOOP_VERSION=${HADOOP_VERSION} \
 		-f ${DOCKER_IMAGES_SPARK}/spark-base.Dockerfile \
 		-t spark-base .
+
+build-spark-master:
 	@docker build \
 		-f ${DOCKER_IMAGES_SPARK}/spark-master.Dockerfile \
 		-t spark-master .
+
+build-spark-worker:
 	@docker build \
 		-f ${DOCKER_IMAGES_SPARK}/spark-worker.Dockerfile \
 		-t spark-worker .
+
+build-pyspark:
 	@docker build \
 		--build-arg SPARK_VERSION=${SPARK_VERSION} \
 		-f ${DOCKER_IMAGES_SPARK}/pyspark.Dockerfile \
 		-t pyspark .
 
-build-jupyter: build-spark-cluster
+build-jupyter-with-spark: build-spark-cluster
 	@docker build \
 		--build-arg JUPYTERLAB_VERSION="${VERSION_JUPYTERLAB}" \
 		-f ${DOCKER_IMAGES}/jupyterlab.Dockerfile \
