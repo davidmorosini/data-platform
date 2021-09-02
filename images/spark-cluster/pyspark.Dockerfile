@@ -1,8 +1,7 @@
 FROM cluster-base
 
-ARG SPARK_VERSION=3.0.0
+ARG SPARK_VERSION
 
-# Install Python
 RUN apt-get update -y && \
     apt-get install -y python3 && \
     apt-get install -y python3-pip && \
@@ -10,6 +9,5 @@ RUN apt-get update -y && \
 
 COPY requirements.txt /tmp
 
-# Install commom libs
 RUN pip install pyspark==${SPARK_VERSION} && \
     pip install -r /tmp/requirements.txt

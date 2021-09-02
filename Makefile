@@ -11,8 +11,8 @@ build-spark-cluster:
 		-f ${DOCKER_IMAGES_SPARK}/cluster-base.Dockerfile \
 		-t cluster-base .
 	@docker build \
-		--build-arg SPARK_VERSION="${VERSION_SPARK}" \
-		--build-arg HADOOP_VERSION="${VERSION_HADOOP}" \
+		--build-arg SPARK_VERSION=${SPARK_VERSION} \
+		--build-arg HADOOP_VERSION=${HADOOP_VERSION} \
 		-f ${DOCKER_IMAGES_SPARK}/spark-base.Dockerfile \
 		-t spark-base .
 	@docker build \
@@ -22,7 +22,7 @@ build-spark-cluster:
 		-f ${DOCKER_IMAGES_SPARK}/spark-worker.Dockerfile \
 		-t spark-worker .
 	@docker build \
-		--build-arg SPARK_VERSION="${VERSION_SPARK}" \
+		--build-arg SPARK_VERSION=${SPARK_VERSION} \
 		-f ${DOCKER_IMAGES_SPARK}/pyspark.Dockerfile \
 		-t pyspark .
 

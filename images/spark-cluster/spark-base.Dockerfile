@@ -1,13 +1,12 @@
 FROM cluster-base
 
-# Variáveis de ambiente fornecidas
+ARG SPARK_VERSION
+ARG HADOOP_VERSION
+
 ARG SPARK_HOST_MASTER=spark-master
 ARG SPARK_PORT_MASTER=7077
 ARG PYSPARK_PYTHON_VERSION=python3
-ARG SPARK_VERSION=3.0.0
-ARG HADOOP_VERSION=2.7
 
-# Variáveis de ambiente "calculadas"
 ARG SPARK_NAME=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
 ARG SPARK_HOME_PATH=/usr/bin/${SPARK_NAME}
 ARG HADOOP_URL=https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/${SPARK_NAME}.tgz
