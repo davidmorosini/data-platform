@@ -18,7 +18,7 @@ x-airflow-common:
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
   volumes:
     - ./airflow/dags:/opt/airflow/dags
-    - ./airflow/logs:/opt/airflow/logs
+    - ./logs/airflow:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
     - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg:ro
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"

@@ -5,6 +5,7 @@ local_dataset/
 **/*.parquet.*
 **/_SUCCESS
 **/*.csv
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

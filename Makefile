@@ -7,6 +7,7 @@ build-all: build-all-clusters
 build-all-clusters: build-spark-cluster build-airflow-cluster
 
 build-airflow-cluster:
+	mkdir -p logs/airflow
 	@docker-compose build postgres redis airflow-webserver airflow-scheduler airflow-worker airflow-init flower
 
 build-spark-cluster: build-spark-cluster-base build-spark-base build-spark-master build-spark-worker build-pyspark build-jupyter-with-spark
