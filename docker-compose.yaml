@@ -32,14 +32,7 @@ services:
     logging:
       driver: none
 
-  jupyterlab:
-    image: jupyterlab
-    container_name: jupyterlab
-    ports:
-      - 8888:8888
-    volumes:
-      - shared-workspace:/opt/workspace
-      - ./notebooks/:/opt/workspace/notebooks
+  #### Spark Custer + Jupyter Lab ####
 
   spark-master:
     image: spark-master
@@ -75,3 +68,12 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
+
+  jupyterlab:
+    image: jupyterlab
+    container_name: jupyterlab
+    ports:
+      - 8888:8888
+    volumes:
+      - shared-workspace:/opt/workspace
+      - ./notebooks/:/opt/workspace/notebooks
