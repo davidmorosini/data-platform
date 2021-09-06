@@ -4,7 +4,10 @@ default: build-all
 
 build-all: build-all-clusters
 
-build-all-clusters: build-spark-cluster
+build-all-clusters: build-spark-cluster build-airflow-cluster
+
+build-airflow-cluster:
+	@docker-compose build postgres redis airflow-webserver airflow-scheduler airflow-worker airflow-init flower
 
 build-spark-cluster: build-spark-cluster-base build-spark-base build-spark-master build-spark-worker build-pyspark build-jupyter-with-spark
 
@@ -54,6 +57,9 @@ run:
 
 run-spark:
 	@docker-compose up spark-master spark-worker-1 spark-worker-2 jupyterlab
+
+run-airflow:
+	@docker-compose up postgres redis airflow-webserver airflow-scheduler airflow-worker airflow-init flower
 
 run-olap:
 	@docker-compose up olap postgrest
