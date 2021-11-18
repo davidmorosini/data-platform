@@ -1,74 +1,61 @@
-# dataservice
-My personal Infrastructure of Data As a Service
+# Data Service
 
+This project builds my **simple** structure of **data as a service**, including some platforms and tools for processing and provide data.
 
-## All Build
+---
 
-```sh
-make build-all
+## Platforms Included
+
+|                   Platform                    | version |
+|:---------------------------------------------:|:-------:|
+| [Apache Airflow](https://airflow.apache.org/) |  2.1.2  |
+|   [Apache Spark](https://spark.apache.org/)   |  3.1.2  |
+|  [Apache Hadoop](https://hadoop.apache.org/)  |   3.2   |
+|      [PostgREST](https://postgrest.org/)      | v7.0.1  |
+
+---
+
+## Run Locally
+
+|                  Need to install                   | tested version |       tested build       |
+|:--------------------------------------------------:|:--------------:|:------------------------:|
+|  [Docker Engine](https://docs.docker.com/engine/)  |    20.10.7     | 20.10.7-0ubuntu1~20.04.2 |
+| [docker-compose](https://docs.docker.com/compose/) |     1.29.2     |         5becea4c         |
+
+### Initial steps
+
+- First, Build all docker images
+
+```bash
+make
 ```
 
-## Spark Cluster
+### Run All Clusters
 
-this environment contains a spark cluster with 2 workers and a Jupyter Lab instance to prototype.
+- Just, run it
 
-```sh
-make run-spark
+```bash
+make run-all-clusters
 ```
 
-This execution results in:
+|         Interface         |                   URL                    |
+|:-------------------------:|:----------------------------------------:|
+|    Airflow Webservice     | [localhost:8080](http://localhost:8080/) |
+|  Spark Master Webservice  | [localhost:8081](http://localhost:8081/) |
+| Spark Worker 1 Webservice | [localhost:8082](http://localhost:8082/) |
+| Spark Worker 2 Webservice | [localhost:8083](http://localhost:8083/) |
+|  Jupyter Lab Webservice   | [localhost:8888](http://localhost:8888/) |
 
-- http://localhost:8888/  -> Jupyter lab Interface (Connected with spark cluster)
-- http://localhost:8081/  -> Spark master Interface
-- http://localhost:8082/  -> Spark worker 1 Interface
-- http://localhost:8083/  -> Spark worker 2 Interface
+:warning: For run each service alone, please see the `Makefile`
 
+### Run QAS (Linter + Tests) Locally
 
-## Airflow Cluster
+- Just, run it
 
-this environment contains a airflow cluster with 1 worker.
-
-```sh
-make run-airflow
+```bash
+make qas
 ```
 
-http://localhost:8888/ 
+:warning: Black execution can be modify your code (Including Jupyter Notebooks) follow black's code guidestyle.
 
-
-This execution results in:
-- http://localhost:8080/  -> Airflow Webservice Interface
-
-
-## Postgres as REST API
-
-```sh
-make build-postgrest
-make run-olap
-```
-
-Execute os comandos abaixo no console SQL
-```sql
-create schema olap;
-
-create table olap.todos (
-  id serial primary key,
-  done boolean not null default false,
-  task text not null,
-  due timestamptz
-);
-
-insert into olap.todos (task) values
-  ('finish tutorial 0'), ('pat self on back');
-  
-
-create role web_anon nologin;
-
-grant usage on schema olap to web_anon;
-grant select on olap.todos to web_anon;
-```
-
-
-Consulte em:
-```
-http://localhost:3000/todos
-```
+---
