@@ -89,6 +89,9 @@ run-all-clusters: build-all-clusters
 		airflow-init \
 		flower
 
+run-data-warehouse: build-postgrest
+	@docker-compose up data-warehouse postgrest
+
 run-spark: build-spark-cluster
 	@docker-compose up spark-master spark-worker-1 spark-worker-2 jupyterlab
 

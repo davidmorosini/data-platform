@@ -32,33 +32,37 @@ volumes:
   postgres-db-volume:
 
 services:
-  # olap:
-  #   container_name: olap
-  #   image: postgres:10.10-alpine
-  #   restart: always
-  #   env_file: .env
-  #   healthcheck:
-  #     test: pg_isready -U postgres
-  #     interval: 5s
-  #     retries: 5
-  #     timeout: 3s
-  #   ports:
-  #     - 5432:5432
-  #   logging:
-  #     driver: none
-  
-  # postgrest:
-    # container_name: postgrest
-    # image: postgrest
-    # restart: always
-    # ports:
-    #   - 3000:3000
-    # depends_on:
-    #   - olap
-    # logging:
-    #   driver: none
 
+  #########################    DATA WAREHOUSE    #########################
+  data-warehouse:
+    container_name: data-warehouse
+    image: postgres:10.10-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: data
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: warehouse
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 5s
+      retries: 5
+      timeout: 3s
+    ports:
+      - 5433:5432
+    logging:
+      driver: none
   
+  postgrest:
+    container_name: postgrest
+    image: postgrest:latest
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - data-warehouse
+    logging:
+      driver: none
+  #########################    DATA WAREHOUSE    #########################
   
   #########################  SPARK + JUPYTERLAB  #########################
   spark-master:
