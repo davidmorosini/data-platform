@@ -104,6 +104,7 @@ services:
     volumes:
       - shared-workspace:/opt/workspace
       - ./notebooks/:/opt/workspace/notebooks
+      - ./plugins/:/opt/workspace/plugins
   #########################  SPARK + JUPYTERLAB  #########################
   
   #########################   AIRFLOW  CLUSTER   #########################

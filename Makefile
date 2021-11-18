@@ -75,10 +75,10 @@ build-postgrest:
 run-spark: build-spark-cluster
 	@docker-compose up spark-master spark-worker-1 spark-worker-2 jupyterlab
 
-run-spark-without-jupyter: build-spark-cluster-base build-spark-base build-spark-master build-spark-worker
+run-spark-without-jupyterlab: build-spark-cluster-base build-spark-base build-spark-master build-spark-worker
 	@docker-compose up spark-master spark-worker-1 spark-worker-2
 
-run-jupyter-notebook: build-pyspark build-jupyter-with-spark
+run-jupyterlab: build-pyspark build-jupyter-with-spark
 	@docker-compose up jupyterlab
 
 run-airflow: build-airflow-cluster
