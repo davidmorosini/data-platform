@@ -2,9 +2,7 @@ version: "3.6"
 
 x-airflow-common:
   &airflow-common
-  build: 
-      context: ./images/airflow-cluster
-      dockerfile: airflow-base.Dockerfile
+  image: airflow-base:latest
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -13,14 +11,13 @@ x-airflow-common:
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
-    AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.default'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
   volumes:
-    - ./airflow/dags:/opt/airflow/dags
+    - ./dags:/opt/airflow/dags
     - ./logs/airflow:/opt/airflow/logs
-    - ./airflow/plugins:/opt/airflow/plugins
-    - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg:ro
+    - ./plugins:/opt/airflow/plugins
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     redis:
@@ -61,10 +58,11 @@ services:
     # logging:
     #   driver: none
 
-  #### Spark Custer + Jupyter Lab ####
-
+  
+  
+  #########################  SPARK + JUPYTERLAB  #########################
   spark-master:
-    image: spark-master
+    image: spark-master:latest
     container_name: spark-master
     ports:
       - 8081:8080
@@ -73,7 +71,7 @@ services:
       - shared-workspace:/opt/workspace
 
   spark-worker-1:
-    image: spark-worker
+    image: spark-worker:latest
     container_name: spark-worker-1
     environment:
       - SPARK_WORKER_CORES=1
@@ -86,7 +84,7 @@ services:
       - spark-master
 
   spark-worker-2:
-    image: spark-worker
+    image: spark-worker:latest
     container_name: spark-worker-2
     environment:
       - SPARK_WORKER_CORES=1
@@ -99,15 +97,16 @@ services:
       - spark-master
 
   jupyterlab:
-    image: jupyterlab
-    container_name: jupyterlab
+    image: jupyterlab:latest
+    container_name: spark-jupyterlab
     ports:
       - 8888:8888
     volumes:
       - shared-workspace:/opt/workspace
       - ./notebooks/:/opt/workspace/notebooks
-
-  #### Airflow Cluster ####
+  #########################  SPARK + JUPYTERLAB  #########################
+  
+  #########################   AIRFLOW  CLUSTER   #########################
   postgres:
     image: postgres:13
     environment:
@@ -121,6 +120,8 @@ services:
       interval: 5s
       retries: 5
     restart: always
+    logging:
+      driver: none
 
   redis:
     image: redis:latest
@@ -132,6 +133,8 @@ services:
       timeout: 30s
       retries: 50
     restart: always
+    logging:
+      driver: none
 
   airflow-webserver:
     <<: *airflow-common
@@ -144,6 +147,11 @@ services:
       timeout: 10s
       retries: 5
     restart: always
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs/airflow:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./airflow_webserver_config.py:/opt/airflow/webserver_config.py
 
   airflow-scheduler:
     <<: *airflow-common
@@ -188,3 +196,6 @@ services:
       timeout: 10s
       retries: 5
     restart: always
+    logging:
+      driver: none
+  #########################   AIRFLOW  CLUSTER   #########################
