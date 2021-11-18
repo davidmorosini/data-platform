@@ -2,14 +2,13 @@ include .env
 
 SHELL := /bin/bash
 
-
 default: build-all
 
 ########################  BUILD  ########################
 
-build-all: build-all-clusters build-postgrest build-qas
+build-all: build-all-clusters build-qas
 
-build-all-clusters: build-spark-cluster build-airflow-cluster
+build-all-clusters: build-spark-cluster build-airflow-cluster build-postgrest
 
 build-airflow-cluster:
 	@mkdir -p logs/airflow
@@ -73,8 +72,22 @@ build-qas:
 	@docker build \
 		-f dockerfiles/qas/Dockerfile \
 		-t qas-base .
+
 ########################  EXECUTION  ########################
 
+run-all-clusters: build-all-clusters
+	@docker-compose up \
+		spark-master \
+		spark-worker-1 \
+		spark-worker-2 \
+		jupyterlab \
+		postgres \
+		redis \
+		airflow-webserver \
+		airflow-scheduler \
+		airflow-worker \
+		airflow-init \
+		flower
 
 run-spark: build-spark-cluster
 	@docker-compose up spark-master spark-worker-1 spark-worker-2 jupyterlab
