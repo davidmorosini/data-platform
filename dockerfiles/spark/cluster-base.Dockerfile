@@ -1,6 +1,6 @@
-ARG debian_image_tag=11-jre-slim
+ARG DEBIAN_IMAGE_TAG=11-jre-slim
 
-FROM openjdk:${debian_image_tag}
+FROM openjdk:${DEBIAN_IMAGE_TAG}
 
 ARG CLUSTER_SHARED_WORKSPACE=/opt/workspace
 
@@ -8,7 +8,7 @@ RUN mkdir -p ${CLUSTER_SHARED_WORKSPACE}
 
 ENV SHARED_WORKSPACE=${CLUSTER_SHARED_WORKSPACE}
 
-# Simulando o Hadoop com um volume compartilhado
+# Hadoop Shared Volume Simulation
 VOLUME ${CLUSTER_SHARED_WORKSPACE}
 
 CMD ["bash"]

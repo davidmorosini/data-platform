@@ -1,6 +1,6 @@
 FROM cluster-base
 
-ARG SPARK_VERSION
+ARG PYSPARK_VERSION
 
 RUN apt-get update -y && \
     apt-get install -y python3 && \
@@ -9,5 +9,5 @@ RUN apt-get update -y && \
 
 COPY requirements.txt /tmp
 
-RUN pip install pyspark==${SPARK_VERSION} && \
+RUN pip install pyspark==${PYSPARK_VERSION} && \
     pip install -r /tmp/requirements.txt

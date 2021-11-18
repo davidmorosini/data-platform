@@ -1,12 +1,12 @@
 FROM pyspark
 
-ARG JUPYTERLAB_VERSION=3.0.15
+ARG JUPYTERLAB_VERSION
 
 RUN pip install jupyterlab==${JUPYTERLAB_VERSION}
 
 EXPOSE 8888
 
-# A variável SHARED_WORKSPACE foi definida no cluster-base
+# Env Variable SHARED_WORKSPACE has defined in cluster-base image
 WORKDIR ${SHARED_WORKSPACE}
 
 CMD jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=
