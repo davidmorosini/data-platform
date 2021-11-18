@@ -200,3 +200,28 @@ services:
     logging:
       driver: none
   #########################   AIRFLOW  CLUSTER   #########################
+
+  #########################          QAS         #########################
+  check-black:
+    image: qas-base:latest
+    entrypoint: python -m black .
+    volumes:
+      - ./dags/:/opt/workspace/dags/
+      - ./plugins/:/opt/workspace/plugins/
+      - ./tests/:/opt/workspace/tests/
+      - ./notebooks/:/opt/workspace/notebooks/
+
+  check-autoflake:
+    image: qas-base:latest
+    entrypoint: python -m autoflake -c --remove-unused-variables --remove-all-unused-imports -r dags plugins tests
+    volumes:
+      - ./dags/:/opt/workspace/dags/
+      - ./plugins/:/opt/workspace/plugins/
+      - ./tests/:/opt/workspace/tests/
+
+  unit-tests:
+    image: qas-base:latest
+    entrypoint: python -m pytest
+    volumes:
+      - ./coverage.xml:/opt/workspace/coverage.xml
+  #########################          QAS         #########################

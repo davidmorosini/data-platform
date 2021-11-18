@@ -1,3 +1,4 @@
 # File tipes to ignore
 **/*.parquet
 **/*.csv
+logs/

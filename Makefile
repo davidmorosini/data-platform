@@ -7,7 +7,7 @@ default: build-all
 
 ########################  BUILD  ########################
 
-build-all: build-all-clusters build-postgrest
+build-all: build-all-clusters build-postgrest build-qas
 
 build-all-clusters: build-spark-cluster build-airflow-cluster
 
@@ -69,6 +69,10 @@ build-postgrest:
 		-f dockerfiles/postgrest/Dockerfile \
 		-t postgrest .
 
+build-qas:
+	@docker build \
+		-f dockerfiles/qas/Dockerfile \
+		-t qas-base .
 ########################  EXECUTION  ########################
 
 
@@ -83,6 +87,21 @@ run-jupyterlab: build-pyspark build-jupyter-with-spark
 
 run-airflow: build-airflow-cluster
 	@docker-compose up postgres redis airflow-webserver airflow-scheduler airflow-worker airflow-init flower
+
+qas: linter tests
+
+linter: check-autoflake check-black
+
+tests: unit-tests
+
+check-black: build-qas
+	@docker-compose up check-black
+
+check-autoflake: build-qas
+	@docker-compose up check-autoflake
+
+unit-tests: build-qas
+	@docker-compose up unit-tests
 
 # run-olap:
 # 	@docker-compose up olap postgrest
